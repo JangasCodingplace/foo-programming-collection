@@ -116,6 +116,14 @@ class Generator:
             order_id += 1
         return rows
 
+    @staticmethod
+    def bump_to_file(dir_path: Path, rows: list[CustomerOrder]):
+        dir_path.mkdir(exist_ok=True)
+        with open(dir_path / "customer-orders.csv", "w") as f:
+            header = "CustomerId,ArticleId,OrderId,Timestamp"
+            str_rows = "\n".join([",".join(list(map(str, row.__dict__.values()))) for row in rows])
+            f.write(f"{header}\n{str_rows}")
+
 
 def main():
     command_line_args = parse_command_line_args()
@@ -126,7 +134,7 @@ def main():
         max_date=command_line_args.max_date,
     )
     rows = generator.generate_rows(command_line_args.row_count)
-    print()
+    generator.bump_to_file(command_line_args.target, rows)
 
 
 if __name__ == "__main__":

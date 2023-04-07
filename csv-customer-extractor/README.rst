@@ -6,7 +6,3 @@ that includes information about customer orders, such as
 `CustomerID`, `ArticleID`, `OrderID`, and `Timestamp`. The goal of
 this project is to extract all unique CustomerIDs present in the CSV
 file and generate a text file that lists these unique IDs.
-
-Foo
-===
-Have fun!

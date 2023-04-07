@@ -1,5 +1,4 @@
-CSV Customer Extractor
-======================
+# CSV Customer Extractor
 
 This repository contains a CSV file called `customer-orders.csv`
 that includes information about customer orders, such as

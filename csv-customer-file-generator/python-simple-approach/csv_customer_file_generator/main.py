@@ -1,8 +1,29 @@
+import logging
 import argparse
 from pathlib import Path
 from dataclasses import dataclass
 from random import randint
 from datetime import datetime, timedelta
+
+BASE_DIR = Path(__file__).parent
+LOG_DIR = BASE_DIR / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+log_fmt = logging.Formatter("%(name)s %(asctime)s %(levelname)-8s %(message)s")
+
+console_handler = logging.StreamHandler()
+console_handler.setFormatter(log_fmt)
+console_handler.setLevel(logging.DEBUG)
+
+file_handler = logging.FileHandler(LOG_DIR / "generator.log")
+file_handler.setFormatter(log_fmt)
+file_handler.setLevel(logging.DEBUG)
+
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
 
 
 @dataclass(frozen=True)
@@ -13,6 +34,9 @@ class CommandLineArgs:
     min_date: datetime
     max_date: datetime
     row_count: int
+
+    def to_string(self):
+        return ", ".join([f"{key}: {value}" for key, value in self.__dict__.items()])
 
 
 @dataclass
@@ -29,7 +53,7 @@ def parse_command_line_args() -> CommandLineArgs:
         '--target',
         type=str,
         help='Target directory for generated csv file',
-        default=str(Path(__file__).parent / "output"),
+        default=str(BASE_DIR / "output"),
     )
     parser.add_argument(
         '--article-count',
@@ -126,15 +150,31 @@ class Generator:
 
 
 def main():
+    logger.debug("Script Started")
     command_line_args = parse_command_line_args()
+    logger.debug(f"Settings: {command_line_args.to_string()}")
+    start_time_generator_init = datetime.now()
     generator = Generator(
         article_count=command_line_args.article_count,
         customer_count=command_line_args.customer_count,
         min_date=command_line_args.min_date,
         max_date=command_line_args.max_date,
     )
+    end_time_generator_init = datetime.now()
+    d_t_generator_init = (end_time_generator_init - start_time_generator_init).microseconds
+    logger.debug(f"Generator init took {d_t_generator_init}ms")
+
+    start_time_row_generator = datetime.now()
     rows = generator.generate_rows(command_line_args.row_count)
+    end_time_row_generator = datetime.now()
+    d_t_row_generator = (end_time_row_generator - start_time_row_generator).microseconds
+    logger.debug(f"Generating rows took {d_t_row_generator}ms")
+
+    start_time_file_bump = datetime.now()
     generator.bump_to_file(command_line_args.target, rows)
+    end_time_file_bump = datetime.now()
+    d_t_file_bump = (end_time_file_bump - start_time_file_bump).microseconds
+    logger.debug(f"File Bump took {d_t_file_bump}ms")
 
 
 if __name__ == "__main__":

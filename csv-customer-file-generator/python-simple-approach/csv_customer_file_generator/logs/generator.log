@@ -1,0 +1,9 @@
+__main__ 2023-04-08 11:22:35,339 DEBUG    Script Started
+__main__ 2023-04-08 11:22:35,353 DEBUG    Generator init took 672ms
+__main__ 2023-04-08 11:22:35,476 DEBUG    Generating rows took 122712ms
+__main__ 2023-04-08 11:22:35,496 DEBUG    File Bump took 20000ms
+__main__ 2023-04-08 11:24:52,300 DEBUG    Script Started
+__main__ 2023-04-08 11:24:52,307 DEBUG    Settings: target: /Users/janis/Documents/Programmierung/Foo/csv-customer-extractor/data, article_count: 100, customer_count: 100, min_date: 2022-01-01 00:00:00, max_date: 2023-01-01 00:00:00, row_count: 10000
+__main__ 2023-04-08 11:24:52,307 DEBUG    Generator init took 311ms
+__main__ 2023-04-08 11:24:52,417 DEBUG    Generating rows took 109138ms
+__main__ 2023-04-08 11:24:52,432 DEBUG    File Bump took 15297ms

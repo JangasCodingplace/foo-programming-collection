@@ -13,6 +13,7 @@ class CommandLineArgs:
     min_date: datetime
     max_date: datetime
     row_count: int
+    thread_count: int
 
     def __str__(self):
         return ", ".join([f"{key}: {value}" for key, value in self.__dict__.items()])
@@ -59,6 +60,15 @@ def _parse_command_line_args() -> CommandLineArgs:
         help='row count for order generation.',
         default=10000,
     )
+    parser.add_argument(
+        '--thread-count',
+        type=int,
+        help=(
+            "number of threads which should be used. If number is higher than Number of CPU - 1, "
+            "it will be set to CPU - 1"
+        ),
+        default=1,
+    )
 
     args = parser.parse_args()
     return CommandLineArgs(
@@ -68,6 +78,7 @@ def _parse_command_line_args() -> CommandLineArgs:
         min_date=datetime.strptime(args.min_date, "%Y-%m-%d"),
         max_date=datetime.strptime(args.max_date, "%Y-%m-%d"),
         row_count=args.row_count,
+        thread_count=args.thread_count,
     )
 
 

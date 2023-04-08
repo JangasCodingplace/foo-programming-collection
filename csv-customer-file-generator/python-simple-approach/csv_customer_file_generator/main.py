@@ -35,7 +35,7 @@ class CommandLineArgs:
     max_date: datetime
     row_count: int
 
-    def to_string(self):
+    def __str__(self):
         return ", ".join([f"{key}: {value}" for key, value in self.__dict__.items()])
 
 
@@ -155,7 +155,7 @@ class Generator:
 def main():
     logger.debug("Script Started")
     command_line_args = parse_command_line_args()
-    logger.debug(f"Settings: {command_line_args.to_string()}")
+    logger.debug(f"Settings: {command_line_args}")
     start_time_generator_init = datetime.now()
     generator = Generator(
         article_count=command_line_args.article_count,

@@ -48,7 +48,10 @@ class CustomerOrder:
 
 
 def parse_command_line_args() -> CommandLineArgs:
-    parser = argparse.ArgumentParser(description='CSV Customer File Generator')
+    parser = argparse.ArgumentParser(
+        description='CSV Customer File Generator',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
     parser.add_argument(
         '--target',
         type=str,

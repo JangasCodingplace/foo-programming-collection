@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class CustomerOrder:
-    customer_id: int
-    article_id: int
+    customer_id: str
+    article_id: str
     order_id: int
     timestamp: int

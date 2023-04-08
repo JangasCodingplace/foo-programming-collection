@@ -1,5 +1,5 @@
 import argparse
-from config import BASE_DIR
+from config import BASE_DIR, MAX_THREAD_COUNT
 from pathlib import Path
 from datetime import datetime
 from dataclasses import dataclass
@@ -78,7 +78,7 @@ def _parse_command_line_args() -> CommandLineArgs:
         min_date=datetime.strptime(args.min_date, "%Y-%m-%d"),
         max_date=datetime.strptime(args.max_date, "%Y-%m-%d"),
         row_count=args.row_count,
-        thread_count=args.thread_count,
+        thread_count=args.thread_count if args.thread_count < MAX_THREAD_COUNT else MAX_THREAD_COUNT
     )
 
 

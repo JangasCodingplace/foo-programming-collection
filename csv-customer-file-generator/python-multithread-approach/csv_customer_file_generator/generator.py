@@ -1,9 +1,15 @@
 from datetime import datetime, timedelta
 from models import CustomerOrder
 from random import randint
+from abc import ABC, abstractmethod
+from threading import Thread
+from utils import get_logger
 
 
-class Generator:
+logger = get_logger(__name__)
+
+
+class Generator(ABC):
     def __init__(
         self,
         article_count: int,
@@ -37,6 +43,12 @@ class Generator:
             ) for article in articles
         ]
 
+    @abstractmethod
+    def generate_rows(self, *args, **kwargs):
+        pass
+
+
+class SingleThreadGenerator(Generator):
     def generate_rows(self, max_row_count: int) -> list[CustomerOrder]:
         order_id = 1000
         rows = []
@@ -44,4 +56,35 @@ class Generator:
             order = self._generate_order(order_id)
             rows += order
             order_id += 1
+        return rows
+
+
+class MultithreadGenerator(Generator):
+    def generate_rows(self, max_row_count: int, thread_count: int) -> list[CustomerOrder]:
+        max_row_count_per_thread = max_row_count // thread_count
+        threads = []
+        rows = []
+        for i in range(thread_count):
+            start_order_id = 1000 + i * max_row_count
+            t = Thread(
+                target=lambda: rows.extend(
+                    self._generate_orders(start_order_id, max_row_count_per_thread)
+                )
+            )
+            threads.append(t)
+            t.start()
+
+        for t in threads:
+            t.join()
+
+        return rows
+
+    def _generate_orders(self, start_order_id: int, max_row_count: int) -> list[CustomerOrder]:
+        logger.debug("Start Chunk")
+        rows = []
+        while len(rows) < max_row_count:
+            order = self._generate_order(start_order_id)
+            rows += order
+            start_order_id += 1
+        logger.debug("Exit Chunk")
         return rows

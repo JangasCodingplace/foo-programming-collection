@@ -1,7 +1,7 @@
 from datetime import datetime
 from utils import get_logger
 from cli import command_line_args
-from generator import Generator
+from generator import MultithreadGenerator
 from writer import Writer
 
 logger = get_logger(__name__)
@@ -11,7 +11,7 @@ def main():
     logger.debug("Script Started")
     logger.debug(f"Settings: {command_line_args}")
     start_time_generator_init = datetime.now()
-    generator = Generator(
+    generator = MultithreadGenerator(
         article_count=command_line_args.article_count,
         customer_count=command_line_args.customer_count,
         min_date=command_line_args.min_date,
@@ -22,7 +22,7 @@ def main():
     logger.debug(f"Generator init took {d_t_generator_init}ms")
 
     start_time_row_generator = datetime.now()
-    rows = generator.generate_rows(command_line_args.row_count)
+    rows = generator.generate_rows(command_line_args.row_count, command_line_args.thread_count)
     end_time_row_generator = datetime.now()
     d_t_row_generator = (end_time_row_generator - start_time_row_generator).microseconds
     logger.debug(f"Generating rows took {d_t_row_generator}ms")

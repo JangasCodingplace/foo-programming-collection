@@ -1,8 +1,8 @@
+import multiprocessing
 from datetime import datetime, timedelta
 from models import CustomerOrder
 from random import randint
 from abc import ABC, abstractmethod
-from threading import Thread
 from utils import get_logger
 
 
@@ -60,31 +60,35 @@ class SingleThreadGenerator(Generator):
 
 
 class MultithreadGenerator(Generator):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.rows = []
+        self._lock = multiprocessing.Lock()
+
     def generate_rows(self, max_row_count: int, thread_count: int) -> list[CustomerOrder]:
         max_row_count_per_thread = max_row_count // thread_count
-        threads = []
-        rows = []
+        processes = []
         for i in range(thread_count):
             start_order_id = 1000 + i * max_row_count
-            t = Thread(
-                target=lambda: rows.extend(
-                    self._generate_orders(start_order_id, max_row_count_per_thread)
-                )
+            p = multiprocessing.Process(
+                target=self._generate_orders,
+                args=(start_order_id, max_row_count_per_thread),
             )
-            threads.append(t)
-            t.start()
+            processes.append(p)
+            p.start()
 
-        for t in threads:
-            t.join()
+        for p in processes:
+            p.join()
 
-        return rows
+        return self.rows
 
-    def _generate_orders(self, start_order_id: int, max_row_count: int) -> list[CustomerOrder]:
+    def _generate_orders(self, start_order_id: int, max_row_count: int):
         logger.debug("Start Chunk")
-        rows = []
-        while len(rows) < max_row_count:
+        tmp_rows = 0
+        while tmp_rows < max_row_count:
             order = self._generate_order(start_order_id)
-            rows += order
+            with self._lock:
+                self.rows.extend(order)
             start_order_id += 1
+            tmp_rows += len(order)
         logger.debug("Exit Chunk")
-        return rows

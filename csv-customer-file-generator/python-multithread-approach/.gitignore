@@ -8,3 +8,5 @@ __pycache__/
 
 *.log
 logs/
+
+csv_customer_file_generator/output/

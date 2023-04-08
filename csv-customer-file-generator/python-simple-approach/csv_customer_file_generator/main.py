@@ -143,8 +143,10 @@ class Generator:
             order_id += 1
         return rows
 
+
+class Writer:
     @staticmethod
-    def bump_to_file(dir_path: Path, rows: list[CustomerOrder]):
+    def csv_file_writer(dir_path: Path, rows: list[CustomerOrder]):
         dir_path.mkdir(exist_ok=True)
         with open(dir_path / "customer-orders.csv", "w") as f:
             header = "CustomerId,ArticleId,OrderId,Timestamp"
@@ -174,7 +176,7 @@ def main():
     logger.debug(f"Generating rows took {d_t_row_generator}ms")
 
     start_time_file_bump = datetime.now()
-    generator.bump_to_file(command_line_args.target, rows)
+    Writer.csv_file_writer(command_line_args.target, rows)
     end_time_file_bump = datetime.now()
     d_t_file_bump = (end_time_file_bump - start_time_file_bump).microseconds
     logger.debug(f"File Bump took {d_t_file_bump}ms")

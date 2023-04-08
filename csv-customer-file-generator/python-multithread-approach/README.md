@@ -1,4 +1,4 @@
-# CSV Customer File Generator - Python simple Approach
+# CSV Customer File Generator - Python multithread Approach
 
 This project is a data generator designed to work with the
 [csv-customer-extractor](./../../csv-customer-extractor/README.md)
@@ -9,9 +9,7 @@ project.
 
 ## Interesting Facts
 
-This project is very basic and single threaded. A multithread approach
-in Python is given here: 
-[python-multithread-approach](./../python-multithread-approach/README.md)
+This project is a multithread approach.
 
 
 ## Setup

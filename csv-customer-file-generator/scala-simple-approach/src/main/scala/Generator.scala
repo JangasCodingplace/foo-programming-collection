@@ -8,8 +8,10 @@ import scala.util.Random
 object Generator {
   def getArticles(count: Int): List[String] =
     (for (_ <- 1 to count) yield UUID.randomUUID().toString).toList
+
   def getCustomers(count: Int): List[String] =
     (for (_ <- 1 to count) yield UUID.randomUUID().toString).toList
+
   def getDates(minDate: LocalDate, maxDate: LocalDate): List[LocalDate] =
     (for (i <- 1 to (maxDate.toEpochDay - minDate.toEpochDay).toInt)
       yield minDate.plusDays(i)).toList
@@ -21,7 +23,7 @@ object Generator {
     accOrders(List(), 0, maxRowCount)
   }
 
-  def generateSingleOrder(orderId: Int, customers: List[String], articles: List[String], dates: List[LocalDate]) = {
+  private def generateSingleOrder(orderId: Int, customers: List[String], articles: List[String], dates: List[LocalDate]) = {
     val customer = customers(Random.nextInt(customers.length))
     val date = dates(Random.nextInt(dates.length))
     val dt = LocalDateTime.of(date.getYear, date.getMonth, date.getDayOfMonth, Random.nextInt(23), Random.nextInt(59), Random.nextInt(59))

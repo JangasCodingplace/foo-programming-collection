@@ -1,7 +1,8 @@
 import models.CustomerOrder
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
+import scala.util.Random
 
 
 object Generator {
@@ -13,5 +14,17 @@ object Generator {
     (for (i <- 1 to (maxDate.toEpochDay - minDate.toEpochDay).toInt)
       yield minDate.plusDays(i)).toList
 
-  def generateCustomerOrders(): List[CustomerOrder] = ???
+  def generateCustomerOrders(maxRowCount: Int, customers: List[String], articles: List[String], dates: List[LocalDate]): List[CustomerOrder] =
+    (1 to maxRowCount).flatMap { orderId =>
+      generateSingleOrder(orderId, customers, articles, dates)
+    }.toList
+
+  def generateSingleOrder(orderId: Int, customers: List[String], articles: List[String], dates: List[LocalDate]) = {
+    val customer = customers(Random.nextInt(customers.length))
+    val date = dates(Random.nextInt(dates.length))
+    val dt = LocalDateTime.of(date.getYear, date.getMonth, date.getDayOfMonth, Random.nextInt(23), Random.nextInt(59), Random.nextInt(59))
+    val timestamp = dt.atZone(java.time.ZoneOffset.UTC).toInstant.getEpochSecond.toInt
+    for (_ <- 1 to Random.nextInt(20) + 1)
+      yield CustomerOrder(customer, articles(Random.nextInt(articles.length)), orderId, timestamp)
+  }
 }

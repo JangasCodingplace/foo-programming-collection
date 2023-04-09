@@ -7,5 +7,7 @@ object Main {
     val minDate = LocalDate.of(2022, 1,1)
     val maxDate = LocalDate.of(2023, 1,1)
     val dates = Generator.getDates(minDate, maxDate)
+    val orders = Generator.generateCustomerOrders(100, customers, articles, dates)
+    println("Foo")
   }
 }

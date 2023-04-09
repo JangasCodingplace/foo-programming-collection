@@ -18,16 +18,34 @@ object Generator {
 
   def generateCustomerOrders(maxRowCount: Int, customers: List[String], articles: List[String], dates: List[LocalDate]): List[CustomerOrder] = {
     def accOrders(orders: List[CustomerOrder], orderId: Int, maxLength: Int): List[CustomerOrder] =
-      if (orders.length < maxLength) accOrders(orders ++ generateSingleOrder(orderId + 1, customers, articles, dates), orderId + 1, maxLength)
+      if (orders.length < maxLength) accOrders(
+        orders ++ generateSingleOrder(orderId + 1, customers, articles, dates),
+        orderId + 1,
+        maxLength
+      )
       else orders
+
     accOrders(List(), 0, maxRowCount)
   }
 
-  private def generateSingleOrder(orderId: Int, customers: List[String], articles: List[String], dates: List[LocalDate]) = {
+  private def generateSingleOrder(orderId: Int, customers: List[String], articles: List[String],
+                                  dates: List[LocalDate]) = {
     val customer = customers(Random.nextInt(customers.length))
     val date = dates(Random.nextInt(dates.length))
-    val dt = LocalDateTime.of(date.getYear, date.getMonth, date.getDayOfMonth, Random.nextInt(23), Random.nextInt(59), Random.nextInt(59))
-    val timestamp = dt.atZone(java.time.ZoneOffset.UTC).toInstant.getEpochSecond.toInt
+    val dt = LocalDateTime.of(
+      date.getYear,
+      date.getMonth,
+      date.getDayOfMonth,
+      Random.nextInt(23),
+      Random.nextInt(59),
+      Random.nextInt(59)
+    )
+    val timestamp = dt
+      .atZone(java.time.ZoneOffset.UTC)
+      .toInstant
+      .getEpochSecond
+      .toInt
+
     for (_ <- 1 to Random.nextInt(20) + 1)
       yield CustomerOrder(customer, articles(Random.nextInt(articles.length)), orderId, timestamp)
   }

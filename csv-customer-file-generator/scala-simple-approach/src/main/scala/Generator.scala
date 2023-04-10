@@ -2,6 +2,7 @@ import models.CustomerOrder
 
 import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
+import scala.annotation.tailrec
 import scala.util.Random
 
 
@@ -22,6 +23,7 @@ object Generator {
     articles: List[String],
     dates: List[LocalDate]
   ): List[CustomerOrder] = {
+    @tailrec
     def accOrders(orders: List[CustomerOrder], orderId: Int, maxLength: Int): List[CustomerOrder] =
       if (orders.length < maxLength) accOrders(
         orders ++ generateSingleOrder(orderId + 1, customers, articles, dates),

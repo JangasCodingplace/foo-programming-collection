@@ -79,7 +79,10 @@ class MultithreadGenerator(Generator):
         for p in processes:
             p.join()
 
-        return rows
+        for p in processes:
+            p.close()
+
+        return list(rows)
 
     def _generate_orders(self, start_order_id: int, max_row_count: int, rows: list[CustomerOrder], lock: multiprocessing.Lock):
         logger.debug("Start Chunk")

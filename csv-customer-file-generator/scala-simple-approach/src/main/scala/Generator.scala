@@ -16,7 +16,12 @@ object Generator {
     (for (i <- 1 to (maxDate.toEpochDay - minDate.toEpochDay).toInt)
       yield minDate.plusDays(i)).toList
 
-  def generateCustomerOrders(maxRowCount: Int, customers: List[String], articles: List[String], dates: List[LocalDate]): List[CustomerOrder] = {
+  def generateCustomerOrders(
+    maxRowCount: Int,
+    customers: List[String],
+    articles: List[String],
+    dates: List[LocalDate]
+  ): List[CustomerOrder] = {
     def accOrders(orders: List[CustomerOrder], orderId: Int, maxLength: Int): List[CustomerOrder] =
       if (orders.length < maxLength) accOrders(
         orders ++ generateSingleOrder(orderId + 1, customers, articles, dates),
@@ -28,8 +33,12 @@ object Generator {
     accOrders(List(), 0, maxRowCount)
   }
 
-  private def generateSingleOrder(orderId: Int, customers: List[String], articles: List[String],
-                                  dates: List[LocalDate]) = {
+  private def generateSingleOrder(
+    orderId: Int,
+    customers: List[String],
+    articles: List[String],
+    dates: List[LocalDate]
+  ) = {
     val customer = customers(Random.nextInt(customers.length))
     val date = dates(Random.nextInt(dates.length))
     val dt = LocalDateTime.of(

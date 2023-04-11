@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "light-gps-tracker"
+version = "0.1.0"
+description = ""
+authors = ["JangasCodingplace <janisgoesser92@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = "^0.95.0"
+psycopg2-binary = "^2.9.6"
+uvicorn = "^0.21.1"
+
+[tool.poetry.dev-dependencies]
+black = "^23.3.0"
+flake8 = "^6.0.0"
+mypy = "^1.2.0"
+pytest = "^7.3.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

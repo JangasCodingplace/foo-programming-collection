@@ -1,6 +1,6 @@
 import os
 import psycopg2.pool
-from typing import Union
+from typing import Union, List
 import uuid
 from fastapi import FastAPI
 from datetime import datetime
@@ -51,6 +51,10 @@ class TimeScaleHandler:
         self.execute(query, *args)
         return self.cursor.fetchone()
 
+    def fetchall(self, query: str, *args):
+        self.execute(query, *args)
+        return self.cursor.fetchall()
+
 
 class VehiclePositionRepository:
     @staticmethod
@@ -88,11 +92,42 @@ class VehiclePositionRepository:
             speed=row[4],
         )
 
+    @staticmethod
+    def list(vehicle_id: Union[str, uuid.UUID], min_dt: int, max_dt: int) -> List[VehiclePosition]:
+        min_dt, max_dt = (min_dt, max_dt) if min_dt <= max_dt else (max_dt, min_dt)
+
+        # https://docs.timescale.com/api/latest/hyperfunctions/last/#last
+        query = """
+                SELECT timestamp, vehicle_id, lat, long, speed
+                FROM vehicle_position
+                WHERE vehicle_id = %s AND timestamp >= %s AND timestamp <= %s
+                ORDER BY timestamp ASC
+            """
+        with TimeScaleHandler(TIMESCALE_CONNECTION_POOL) as db_handler:
+            rows = db_handler.fetchall(query, (
+                str(vehicle_id),
+                datetime.fromtimestamp(min_dt),
+                datetime.fromtimestamp(max_dt),
+            ))
+        return [
+            VehiclePosition(
+                timestamp=int(row[0].timestamp()),
+                vehicle_id=row[1],
+                lat=row[2],
+                long=row[3],
+                speed=row[4],
+            ) for row in rows
+        ]
+
 
 @app.get("/get-position/{vehicle_id}")
 def get_position(vehicle_id: uuid.UUID) -> VehiclePosition:
-    current_position = VehiclePositionRepository.retrieve(vehicle_id)
-    return current_position
+    return VehiclePositionRepository.retrieve(vehicle_id)
+
+
+@app.get("/get-positions/{vehicle_id}")
+def get_positions(vehicle_id: uuid.UUID, min_dt: int, max_dt: int) -> List[VehiclePosition]:
+    return VehiclePositionRepository.list(vehicle_id, min_dt, max_dt)
 
 
 @app.post("/create-position/{vehicle_id}")

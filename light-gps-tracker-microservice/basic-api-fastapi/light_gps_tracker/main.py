@@ -29,4 +29,4 @@ def get_position(vehicle_id: uuid.UUID) -> VehiclePosition:
 
 @app.post("/create-position/{vehicle_id}")
 def create_position(vehicle_id: uuid.UUID, vehicle_position: VehiclePosition) -> VehiclePosition:
-    pass
+    return vehicle_position

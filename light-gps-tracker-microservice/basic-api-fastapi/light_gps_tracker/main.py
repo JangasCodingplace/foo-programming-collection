@@ -1,7 +1,6 @@
 import os
-import psycopg2
 import psycopg2.pool
-from typing import Type
+from typing import Union
 import uuid
 from fastapi import FastAPI
 from datetime import datetime
@@ -46,7 +45,11 @@ class TimeScaleHandler:
         return
 
     def execute(self, query: str, *args):
-        return self.cursor.execute(query, *args)
+        self.cursor.execute(query, *args)
+
+    def fetchone(self, query: str, *args):
+        self.execute(query, *args)
+        return self.cursor.fetchone()
 
 
 class VehiclePositionRepository:
@@ -65,16 +68,30 @@ class VehiclePositionRepository:
                 vehicle_position.speed,
             ))
 
+    @staticmethod
+    def retrieve(vehicle_id: Union[str, uuid.UUID]) -> VehiclePosition:
+        # https://docs.timescale.com/api/latest/hyperfunctions/last/#last
+        query = """
+            SELECT timestamp, vehicle_id, lat, long, speed
+            FROM vehicle_position
+            WHERE vehicle_id = %s
+            ORDER BY timestamp DESC
+            LIMIT 1;
+        """
+        with TimeScaleHandler(TIMESCALE_CONNECTION_POOL) as db_handler:
+            row = db_handler.fetchone(query, (str(vehicle_id), ))
+        return VehiclePosition(
+            timestamp=int(row[0].timestamp()),
+            vehicle_id=row[1],
+            lat=row[2],
+            long=row[3],
+            speed=row[4],
+        )
+
 
 @app.get("/get-position/{vehicle_id}")
 def get_position(vehicle_id: uuid.UUID) -> VehiclePosition:
-    current_position = VehiclePosition(**{
-        "id": vehicle_id,
-        "timestamp": int(datetime.now().timestamp()),
-        "lat": 52.516908,
-        "long": 13.519248,
-        "speed": 45,
-    })
+    current_position = VehiclePositionRepository.retrieve(vehicle_id)
     return current_position
 
 

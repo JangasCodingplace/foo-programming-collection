@@ -1,0 +1,12 @@
+version: '3'
+services:
+  db:
+    image: timescale/timescaledb:latest-pg14
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: rootpassword
+      POSTGRES_USER: rootuser
+      POSTGRES_DB: my_delivery
+    volumes:
+      - ./timescaledb/:/var/lib/postgresql/data

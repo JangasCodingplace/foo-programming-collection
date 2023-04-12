@@ -1,8 +1,8 @@
 import os
 import psycopg2.pool
-from typing import Union, List
+from typing import Union, List, Optional
 import uuid
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from datetime import datetime
 from pydantic import BaseModel
 
@@ -73,7 +73,7 @@ class VehiclePositionRepository:
             ))
 
     @staticmethod
-    def retrieve(vehicle_id: Union[str, uuid.UUID]) -> VehiclePosition:
+    def retrieve(vehicle_id: Union[str, uuid.UUID]) -> Optional[VehiclePosition]:
         # https://docs.timescale.com/api/latest/hyperfunctions/last/#last
         query = """
             SELECT timestamp, vehicle_id, lat, long, speed
@@ -84,6 +84,8 @@ class VehiclePositionRepository:
         """
         with TimeScaleHandler(TIMESCALE_CONNECTION_POOL) as db_handler:
             row = db_handler.fetchone(query, (str(vehicle_id), ))
+        if not row:
+            return None
         return VehiclePosition(
             timestamp=int(row[0].timestamp()),
             vehicle_id=row[1],
@@ -122,7 +124,13 @@ class VehiclePositionRepository:
 
 @app.get("/get-position/{vehicle_id}")
 def get_position(vehicle_id: uuid.UUID) -> VehiclePosition:
-    return VehiclePositionRepository.retrieve(vehicle_id)
+    entity = VehiclePositionRepository.retrieve(vehicle_id)
+    if not entity:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No entity for vehicle with ID `{vehicle_id}` found",
+        )
+    return entity
 
 
 @app.get("/get-positions/{vehicle_id}")

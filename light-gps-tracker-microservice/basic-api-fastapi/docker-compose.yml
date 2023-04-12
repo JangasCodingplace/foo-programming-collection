@@ -9,4 +9,4 @@ services:
       POSTGRES_USER: rootuser
       POSTGRES_DB: my_delivery
     volumes:
-      - ./timescaledb/:/var/lib/postgresql/data
+      - ./timescaledb/volume:/var/lib/postgresql/data

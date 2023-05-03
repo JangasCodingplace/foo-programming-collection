@@ -1,4 +1,16 @@
 [[package]]
+name = "avro"
+version = "1.11.1"
+description = "Avro is a serialization and RPC framework."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+snappy = ["python-snappy"]
+zstandard = ["zstandard"]
+
+[[package]]
 name = "confluent-kafka"
 version = "2.1.0"
 description = "Confluent's Python client for Apache Kafka"
@@ -28,9 +40,12 @@ cli = ["click (>=5.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "e58405cf9de953d89451bde1c3359e2a5fe3bdc30dae2672f275e31720b10805"
+content-hash = "ce40b6fa5e14887306b6479f0ea771f15911a0f620eb56793ca5951d9d34a618"
 
 [metadata.files]
+avro = [
+    {file = "avro-1.11.1.tar.gz", hash = "sha256:f123623ecc648d0e20ce14f8ed85162140c13cc4b108865d1b2529fbfa06c008"},
+]
 confluent-kafka = [
     {file = "confluent-kafka-2.1.0.tar.gz", hash = "sha256:1587a279603f19aa3a4ad3c861495dc3519601bd47152587d6a854172bbef3a7"},
     {file = "confluent_kafka-2.1.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:a1f3922ce82edb75d84b534d11c4fc099f91d2099bb8f2050d0ab83273590bf6"},

@@ -14,5 +14,7 @@ LOG_FMT = logging.Formatter("%(name)s %(asctime)s %(levelname)-8s %(message)s")
 
 KAFKA = {
     "host": os.getenv("KAFKA_HOST", "localhost:9092"),
-    "group": os.getenv("KAFKA_GROUP_ID", "python-consumer"),
+    "group": os.getenv("KAFKA_GROUP_ID", "python-avro-consumer"),
 }
+
+SCHEMA_REGISTRY_URL = os.getenv("SCHEMA_REGISTRY_URL", "http://localhost:8081")

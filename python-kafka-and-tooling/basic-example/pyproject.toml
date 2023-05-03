@@ -8,6 +8,7 @@ authors = ["JangasCodingplace <janisgoesser92@gmail.com>"]
 python = "^3.9"
 confluent-kafka = "^2.1.0"
 avro = "^1.11.1"
+requests = "^2.30.0"
 
 [tool.poetry.dev-dependencies]
 python-dotenv = "^1.0.0"

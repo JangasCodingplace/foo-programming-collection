@@ -57,6 +57,6 @@ services:
     environment:
       CONFIG_YML: "/etc/jmx_exporter/config.yml"
     volumes:
-      - ./etc/jmx_exporter/config.yml:/etc/jmx_exporter/config.yml
+      - ./kafka/jmx_exporter/config.yml:/etc/jmx_exporter/config.yml
     depends_on:
       - kafka-broker

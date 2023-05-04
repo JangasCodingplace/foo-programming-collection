@@ -52,7 +52,7 @@ def main():
         'session.timeout.ms': 6000,
         'auto.offset.reset': 'earliest'
     })
-    consumer.subscribe(["order-data-pbuf"])
+    consumer.subscribe(["line-item-data-pbuf"])
     schema_registry = SchemaRegistry(SCHEMA_REGISTRY_URL)
 
     while True:

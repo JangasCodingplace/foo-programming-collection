@@ -29,7 +29,7 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_CREATE_TOPICS: >-
         order-data-json:1:1
-        order-data-pbuf:1:1
+        line-item-data-pbuf:1:1
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka-broker:9092
       CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper:2181
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
@@ -60,3 +60,27 @@ services:
       - ./kafka/jmx_exporter/config.yml:/etc/jmx_exporter/config.yml
     depends_on:
       - kafka-broker
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus/:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    depends_on:
+      - jmx-exporter
+
+  grafana:
+    image: grafana/grafana
+    container_name: workshop-grafana-monitoring-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_PATHS_DATA: /var/lib/grafana
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    depends_on:
+      - prometheus

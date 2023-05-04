@@ -6,6 +6,7 @@ This Setup includes
 - Kafka (Confluent Image) at Port 9092
 - Schema Registry at Port 8081
 - jmx-exporter for Prometheus
+- Grafana and Prometheus for monitoring
 
 **No Auth is included. All ports are open and any user and any**
 **host can send messages to kafka**
@@ -81,3 +82,15 @@ https://github.com/streamthoughts/kafka-monitoring-stack-docker-compose
 If you like reading something about monitoring and kafka, take a look at
 following article:
 https://newrelic.com/blog/best-practices/new-relic-kafkapocalypse
+
+
+As soon as your containers are running, go to
+`http://{{GRAFANA_HOST}}:3000` and sign in with
+- username: admin
+- password: admin
+
+
+**Note** The Kafka Dashboards are copied from another repository:
+https://github.com/streamthoughts/kafka-monitoring-stack-docker-compose
+
+I love Open Source! :heart:
